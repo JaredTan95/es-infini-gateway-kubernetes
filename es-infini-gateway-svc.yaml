@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: es-infini-gateway
+spec:
+  selector:
+    app: es-infini-gateway
+  ports:
+    - name: metrics
+      port: 2900
+    - name: entry
+      port: 8000

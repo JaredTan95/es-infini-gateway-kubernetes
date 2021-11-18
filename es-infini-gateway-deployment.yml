@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es-infini-gateway-deployment
+  labels:
+    app: es-infini-gateway
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: es-infini-gateway
+  template:
+    metadata:
+      labels:
+        app: es-infini-gateway
+      annotations:
+        # NOTE: update floating ip
+        cni.projectcalico.org/floatingIPs: "[\"10.233.70.10\"]"
+    spec:
+      containers:
+        - name: es-infini-gateway
+          image: infinilabs/gateway:latest
+          resources:
+            limits:
+              cpu: 4000m
+              memory: "4096Mi"
+            requests:
+              cpu: 1000m
+              memory: "1024Mi"
+          ports:
+            - name: metrics
+              containerPort: 2900
+            - name: entry
+              containerPort: 8000
+          volumeMounts:
+          - name: config
+            mountPath: /gateway.yml # This should be your final destination
+            subPath: gateway.yml
+      volumes:
+        - name: config
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: es-infini-gateway-config
+            items:
+            - key: "gateway.yml"
+              path: "gateway.yml"
+

@@ -1,0 +1,38 @@
+apiVersion: v1
+data:
+  gateway.yml: |-
+    path.data: data
+    path.logs: log
+
+    entry:
+      - name: my_es_entry
+        enabled: true
+        router: my_router
+        max_concurrency: 200000
+        network:
+          binding: 0.0.0.0:8000
+
+    flow:
+      - name: simple_flow
+        filter:
+          - elasticsearch:
+              elasticsearch: dev
+
+    router:
+      - name: my_router
+        default_flow: simple_flow
+
+    floating_ip:
+      enabled: true
+      # NOTE: update floating ip
+      ip: 10.233.70.10
+
+    elasticsearch:
+    - name: dev
+      enabled: true
+      endpoint: http://172.16.170.1:9200
+kind: ConfigMap
+metadata:
+  labels:
+    app: es-infini-gateway
+  name: es-infini-gateway-config
