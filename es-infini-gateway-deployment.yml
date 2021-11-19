@@ -15,7 +15,7 @@ spec:
         app: es-infini-gateway
       annotations:
         # NOTE: update floating ip
-        cni.projectcalico.org/floatingIPs: "[\"10.233.70.10\"]"
+        cni.projectcalico.org/floatingIPs: "[\"10.233.70.20\"]"
     spec:
       containers:
         - name: es-infini-gateway

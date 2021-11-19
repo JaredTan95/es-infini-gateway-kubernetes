@@ -7,10 +7,11 @@ data:
     entry:
       - name: my_es_entry
         enabled: true
-        router: my_router
+        router: default
         max_concurrency: 200000
         network:
           binding: 0.0.0.0:8000
+          reuse_port: false
 
     flow:
       - name: simple_flow
@@ -19,18 +20,36 @@ data:
               elasticsearch: dev
 
     router:
-      - name: my_router
+      - name: default
         default_flow: simple_flow
 
     floating_ip:
       enabled: true
       # NOTE: update floating ip
-      ip: 10.233.70.10
+      ip: 10.233.70.20
+
+    #force_merge:
+    #  enabled: true
+    #  elasticsearch: dev
+    #  min_num_segments: 20
+    #  max_num_segments: 1
+    #  indices:
+    #    - es-loadgen-infini
 
     elasticsearch:
     - name: dev
       enabled: true
       endpoint: http://172.16.170.1:9200
+      discovery:
+        enabled: true
+        refresh:
+          enabled: true
+          interval: 10s
+      #basic_auth:
+      #  username: elastic
+      #  password: pass
+      traffic_control:
+        max_qps_per_node: 100000
 kind: ConfigMap
 metadata:
   labels:
